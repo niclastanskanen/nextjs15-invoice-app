@@ -1,9 +1,15 @@
+import { sql } from "drizzle-orm";
+
+import { db } from "@/db";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-const NewInvoicePage = () => {
+const NewInvoicePage = async () => {
+  const results = await db.execute(sql`SELECT current_database()`);
+
   return (
     <main className="flex flex-col justify-center h-full gap-6 max-w-5xl mx-auto my-12">
       <div className="flex justify-between">
