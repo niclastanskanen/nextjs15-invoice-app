@@ -1,21 +1,36 @@
-import { sql } from "drizzle-orm";
+"use client";
 
-import { db } from "@/db";
+import { startTransition, SyntheticEvent, useState } from "react";
+import Form from "next/form";
 
-import { Button } from "@/components/ui/button";
+import { createInvoice } from "@/actions/actions";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import SubmitButton from "@/components/SubmitButton";
 
-const NewInvoicePage = async () => {
-  const results = await db.execute(sql`SELECT current_database()`);
+const NewInvoicePage = () => {
+  const [state, setState] = useState("ready");
+
+  async function handleOnSubmit(event: SyntheticEvent) {
+    if (state === "pending") {
+      event.preventDefault();
+      return;
+    }
+    setState("pending");
+  }
 
   return (
     <main className="flex flex-col justify-center h-full gap-6 max-w-5xl mx-auto my-12">
       <div className="flex justify-between">
         <h1 className="text-3xl font-bold">Invoices</h1>
       </div>
-      <form className="grid gap-4 max-w-xs">
+      <Form
+        action={createInvoice}
+        onSubmit={handleOnSubmit}
+        className="grid gap-4 max-w-xs"
+      >
         <div>
           <Label htmlFor="name" className="block text-sm font-semibold mb-2">
             Billing Name
@@ -44,9 +59,9 @@ const NewInvoicePage = async () => {
           <Textarea name="description" id="description"></Textarea>
         </div>
         <div>
-          <Button className="w-full font-semibold">Submit</Button>
+          <SubmitButton />
         </div>
-      </form>
+      </Form>
     </main>
   );
 };
