@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { CirclePlus } from "lucide-react";
 
+import { db } from "@/db";
+import { Invoices } from "@/db/schema";
+import { cn } from "@/lib/utils";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,8 +16,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { db } from "@/db";
-import { Invoices } from "@/db/schema";
 
 const DashboardPage = async () => {
   const results = await db.select().from(Invoices);
@@ -70,7 +72,17 @@ const DashboardPage = async () => {
                 </TableCell>
                 <TableCell className="text-center p-0">
                   <Link href={`/invoices/${result.id}`} className="block p-4">
-                    <Badge className="rounded-full">{result.status}</Badge>
+                    <Badge
+                      className={cn(
+                        "rounded-full capitalize",
+                        result.status === "open" && "bg-blue-500",
+                        result.status === "paid" && "bg-green-500",
+                        result.status === "void" && "bg-zinc-700",
+                        result.status === "uncollectible" && "bg-red-600",
+                      )}
+                    >
+                      {result.status}
+                    </Badge>
                   </Link>
                 </TableCell>
                 <TableCell className="text-right p-0">
