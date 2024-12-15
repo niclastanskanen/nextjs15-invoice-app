@@ -1,13 +1,18 @@
 import { notFound } from "next/navigation";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 import { db } from "@/db";
 import { Invoices } from "@/db/schema";
 import { cn } from "@/lib/utils";
 
 import { Badge } from "@/components/ui/badge";
+import { auth } from "@clerk/nextjs/server";
 
 const InvoiceIdPage = async ({ params }: { params: { invoiceId: string } }) => {
+  const { userId } = await auth();
+
+  if (!userId) return;
+
   const { invoiceId: invoiceIdParam } = await params;
   const invoiceId = parseInt(invoiceIdParam);
 
@@ -18,8 +23,7 @@ const InvoiceIdPage = async ({ params }: { params: { invoiceId: string } }) => {
   const [result] = await db
     .select()
     .from(Invoices)
-    .where(eq(Invoices.id, invoiceId))
-    .limit(1);
+    .where(and(eq(Invoices.id, invoiceId), eq(Invoices.userId, userId)));
 
   if (!result) {
     notFound();
