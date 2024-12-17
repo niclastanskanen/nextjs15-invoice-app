@@ -151,7 +151,9 @@ const Invoice = ({ invoice }: InvoiceProps) => {
             <strong className="block w-28 flex-shrink-0 font-medium text-sm">
               Invoice Date
             </strong>
-            {/* <span>{new Date(invoice.createTs).toLocaleDateString()}</span> */}
+            <span>
+              {new Date(invoice.createTs).toLocaleDateString("en-GB")}
+            </span>
           </li>
           <li className="flex gap-4">
             <strong className="block w-28 flex-shrink-0 font-medium text-sm">
